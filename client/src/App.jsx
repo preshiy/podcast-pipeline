@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API_URL = "https://podcast-pipeline-backend.onrender.com";
+
 export default function App() {
   const [query, setQuery] = useState("");
   const [podcasts, setPodcasts] = useState([]);
@@ -16,7 +18,7 @@ export default function App() {
 
     try {
       const res = await axios.get(
-        `http://localhost:5001/api/podcasts/search/${encodeURIComponent(query)}`
+        `${API_URL}/api/podcasts/search/${encodeURIComponent(query)}`
       );
       setPodcasts(res.data.data);
     } catch (err) {
@@ -32,7 +34,7 @@ export default function App() {
     setPodcasts([]);
 
     try {
-      const res = await axios.get(`http://localhost:5001/api/podcasts/ranked`);
+      const res = await axios.get(`${API_URL}/api/podcasts/ranked`);
       setPodcasts(res.data.data);
     } catch (err) {
       setError("Could not fetch ranked podcasts.");
@@ -98,13 +100,9 @@ export default function App() {
         </div>
       )}
 
-      {/* LOADING */}
       {loading && <p style={styles.loading}>🔍 Loading podcasts...</p>}
-
-      {/* ERROR */}
       {error && <p style={styles.error}>{error}</p>}
 
-      {/* RESULTS COUNT */}
       {podcasts.length > 0 && (
         <p style={styles.count}>
           Found <strong>{podcasts.length}</strong> podcasts
@@ -120,31 +118,26 @@ export default function App() {
 
           return (
             <div key={podcast.id} style={styles.card}>
-              {/* RANK */}
               {tab === "ranked" && (
                 <div style={styles.rank}>#{i + 1}</div>
               )}
 
-              {/* IMAGE */}
               {podcast.image ? (
                 <img src={podcast.image} alt={podcast.title} style={styles.image} />
               ) : (
                 <div style={styles.noImage}>🎙️</div>
               )}
 
-              {/* CARD BODY */}
               <div style={styles.cardBody}>
                 <h3 style={styles.cardTitle}>{podcast.title}</h3>
                 <p style={styles.cardAuthor}>by {podcast.author}</p>
                 <p style={styles.cardGenre}>{podcast.description}</p>
 
-                {/* EPISODES */}
                 <div style={styles.statRow}>
                   <span style={styles.statLabel}>📻 Episodes</span>
                   <span style={styles.statValue}>{podcast.total_episodes?.toLocaleString()}</span>
                 </div>
 
-                {/* FREQUENCY SCORE BAR */}
                 <div style={styles.statRow}>
                   <span style={styles.statLabel}>📊 Frequency Score</span>
                   <span style={{ ...styles.statValue, color: getScoreColor(score) }}>
@@ -159,7 +152,6 @@ export default function App() {
                   }} />
                 </div>
 
-                {/* BADGE */}
                 <div style={{
                   ...styles.badge,
                   color: badge.color,
@@ -169,7 +161,6 @@ export default function App() {
                   {badge.text}
                 </div>
 
-                {/* LAST FETCHED */}
                 <p style={styles.lastFetched}>
                   🕒 {new Date(podcast.last_fetched).toLocaleDateString()}
                 </p>
