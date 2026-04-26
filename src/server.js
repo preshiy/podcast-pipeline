@@ -9,7 +9,14 @@ import podcastRoutes from "./routes/podcastRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-app.use(cors({ origin: "http://localhost:5174" }));
+app.use(cors({
+  origin: [
+    "http://localhost:5174",
+    "http://localhost:5173",
+    "https://podcast-pipeline-backend.onrender.com"
+  ]
+}));
+
 app.use(express.json());
 app.use("/api/podcasts", podcastRoutes);
 
